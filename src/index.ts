@@ -126,15 +126,20 @@ app.get("/api/quiz/recommendation", async (req: Request<null, null, null, QuizRe
             }
         });
 
-        const prompt = `
-        Matéria | Questão | Nível | Resultado
-        ${quiz.map(question => {
-            return `${question.Question.Matter.name} | ${question.Question.name} | ${question.Question.level} | ${question.result ? "Acertou" : "Errou"}`
-        })
-            }
+        const totals = {
+            hits: quiz.filter(item => item.result === true),
+            errors: quiz.filter(item => item.result !== false),
+        }
 
-        Analisando a tabela acima, o aluno realizou uma prova referente a matéria ${quiz[0].Question.Matter.name}, você poderia recomendar estudos para aluno melhorar os erros que ele cometeu na prova.
-    `;
+        const prompt = `
+            Matéria | Questão | Nível | Resultado
+            ${quiz.map(question => {
+                return `${question.Question.Matter.name} | ${question.Question.name} | ${question.Question.level} | ${question.result ? "Acertou" : "Errou"}`
+            })
+                }
+
+            Analisando a tabela acima, o aluno realizou uma prova referente a matéria ${quiz[0].Question.Matter.name}, você poderia recomendar estudos para aluno melhorar os erros que ele cometeu na prova em realação as questões, compartilhe um resumo, descreva de forma de um artigo. não informar um titulo referente ao artigo.
+        `;
 
         const recommendation = await openai.chat.completions.create({
             messages: [
@@ -143,10 +148,15 @@ app.get("/api/quiz/recommendation", async (req: Request<null, null, null, QuizRe
                     content: prompt
                 }
             ],
-            model: 'gpt-3.5-turbo'
+            model: 'gpt-4'
         });
 
-        res.status(200).json(recommendation);
+        res.status(200).json({
+            recommendation: {
+                message: recommendation.choices[0].message.content
+            },
+            totals
+        });
     } catch (error) {
         if (error instanceof Error) {
             res.status(500).json(error);

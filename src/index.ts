@@ -47,8 +47,6 @@ app.get("/api/quiz/result", async (req: Request<null, null, null, QuizResultQuer
     const query = req.query;
 
     const quiz = await prisma.quiz.findMany({
-        // take: 4,
-        // skip: 4,
         where: {
             studentId: Number(query.studentId),
             assessmentId: Number(query.assessmentId),
@@ -60,8 +58,11 @@ app.get("/api/quiz/result", async (req: Request<null, null, null, QuizResultQuer
             }
         },
         include: {
-            Student: true,
-            Question: true,
+            Question: {
+                include: {
+                    Matter: true
+                }
+            },
             Assessment: true
         }
     });

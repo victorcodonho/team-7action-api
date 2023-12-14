@@ -127,8 +127,8 @@ app.get("/api/quiz/recommendation", async (req: Request<null, null, null, QuizRe
         });
 
         const totals = {
-            hits: quiz.filter(item => item.result === true),
-            errors: quiz.filter(item => item.result !== false),
+            hits: quiz.filter(item => item.result === true).length,
+            errors: quiz.filter(item => item.result === false).length,
         }
 
         const prompt = `

@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Assessment {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+
+  Quiz Quiz[]
+}
+
+model Classe {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+
+  Student Student[]
+}
+
+model Matter {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+
+  Question Question[]
+}
+
+model Student {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  classeId Int
+
+  Classe Classe @relation(fields: [classeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  Quiz Quiz[]
+}
+
+model Question {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  ability String @db.Text
+  level String @db.Text
+  matterId Int
+
+  Matter Matter @relation(fields: [matterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Quiz Quiz[]
+}
+
+model Quiz {
+  id Int @id @default(autoincrement())
+  result Boolean @db.Boolean
+  studentId Int
+  questionId Int
+  assessmentId Int
+
+  Student Student @relation(fields: [studentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Question Question @relation(fields: [questionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

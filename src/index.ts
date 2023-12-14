@@ -58,6 +58,7 @@ app.get("/api/quiz/result", async (req: Request<null, null, null, QuizResultQuer
             }
         },
         include: {
+            Student: true,
             Question: {
                 include: {
                     Matter: true

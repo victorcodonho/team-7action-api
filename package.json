@@ -4,10 +4,9 @@
   "description": "Team 7 Action API (Node, Express and ChatGPT)",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc --output public",
+    "build": "npx tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
-    "vercel-build": "npx prisma migrate deploy"
+    "dev": "nodemon src/index.ts"
   },
   "keywords": [],
   "author": "",
